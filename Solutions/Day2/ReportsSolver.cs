@@ -8,48 +8,78 @@ namespace Solutions.Day2
 {
     public class ReportsSolver
     {
-        public async Task LoadRawData()
+        private List<List<byte>> _reports = [];
+
+        public async Task LoadRawData(string path)
         {
-            foreach (var line in await File.ReadAllLinesAsync("./data.txt"))
+            foreach (var line in await File.ReadAllLinesAsync(path))
             {
                 _reports.Add(line.Split(' ').Select(i => Convert.ToByte(i)).ToList());
             }
         }
 
-        private bool IsSafe(List<byte> report)
+        private bool IsSafe(List<byte> report, bool dampen = false)
         {
-
-            var isOrdered = Enumerable.SequenceEqual(report.OrderBy(i => i), report) || Enumerable.SequenceEqual(report.OrderByDescending(i => i), report);
-
-            if (!isOrdered)
-            {
-                return false;
-            }
-
+            var isOrdered = Enumerable.SequenceEqual(report, report.OrderBy(i => i)) || Enumerable.SequenceEqual(report, report.OrderByDescending(i => i));
+            var safe = true;
             for (var i = 0; i < report.Count; i++)
             {
-                if (i == report.Count)
+                if (i == report.Count - 1)
                 {
-                    break;
+                    if (safe)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        if (dampen)
+                        {
+                            return false;
+                        } else
+                        {
+                            var copy = report.ToList();
+                            copy.RemoveAt(i);
+                            return IsSafe(copy, true);
+                        }
+                    }
                 }
 
                 var curr = report[i];
                 var next = report[i + 1];
-                var difference = (curr - next) < 0 ? (curr - next) * -1 : (curr - next);
-                if (difference < 1 && difference > 3)
+                var difference = Math.Abs(curr - next);
+                if (!isOrdered || difference < 1 || difference > 3)
                 {
-                    return false;
+                    if (dampen)
+                    {
+                        safe = false;
+                    } else
+                    {
+
+                        var copy = report.ToList();
+                        copy.RemoveAt(i);
+                        safe = IsSafe(copy, true);
+
+                        if (safe)
+                        {
+                            return safe;
+                        }
+                    }
                 }
             }
+            return safe;
+        }
 
-            return true;
+        
+        private List<byte> GetCopy(List<byte> report, int index)
+        {
+            var copy = report.ToList();
+            copy.RemoveAt(index);
+            return copy;
         }
 
         public int GetNumberOfSafeReport()
         {
             return _reports.Where(i => IsSafe(i)).Count();
         }
-
-        private List<List<byte>> _reports = [];
     }
 }

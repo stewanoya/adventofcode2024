@@ -6,7 +6,7 @@ public static class Day1
   {
     LocationSolver locationsSolver = new LocationSolver();
 
-    await locationsSolver.LoadRawLocationData("./data.txt");
+    await locationsSolver.LoadRawLocationData("/day1/data.txt");
     locationsSolver.SortData();
     locationsSolver.CalculateDifferences();
     var sum = locationsSolver.GetSum();
