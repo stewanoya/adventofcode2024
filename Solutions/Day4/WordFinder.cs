@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 
 namespace Solutions.Day4
 {
@@ -93,10 +94,16 @@ namespace Solutions.Day4
 
         private bool CheckCorners(int x, int y)
         {
-            var moveNw = MoveIsPossible(x, y, _nw.Item1, _nw.Item2);
-            var moveNe = MoveIsPossible(x, y, _ne.Item1, _ne.Item2);
-            var moveSw = MoveIsPossible(x, y, _sw.Item1, _sw.Item2);
-            var moveSe = MoveIsPossible(x, y, _se.Item1, _se.Item2);
+            var moveNw = ArrayUtil.MoveIsPossible(x, y, _nw.Item1, _nw.Item2, _searchBoard);
+            var moveNe = ArrayUtil.MoveIsPossible(x, y, _ne.Item1, _ne.Item2, _searchBoard);
+            var moveSw = ArrayUtil.MoveIsPossible(x, y, _sw.Item1, _sw.Item2, _searchBoard);
+            var moveSe = ArrayUtil.MoveIsPossible(x, y, _se.Item1, _se.Item2, _searchBoard);
+
+            //var moveNw = MoveIsPossible(x, y, _nw.Item1, _nw.Item2);
+            //var moveNe = MoveIsPossible(x, y, _ne.Item1, _ne.Item2);
+            //var moveSw = MoveIsPossible(x, y, _sw.Item1, _sw.Item2);
+            //var moveSe = MoveIsPossible(x, y, _se.Item1, _se.Item2);
+
 
             return moveNe && moveNw && moveSw && moveSe;
         }
